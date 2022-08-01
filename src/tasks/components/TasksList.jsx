@@ -1,18 +1,74 @@
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import CreateTaskInput from './CreateTaskInput';
+import Task from './Task';
+import * as tasksActions from '../tasks.actions';
+import { sortedTasksSelector } from '../tasks.selectors';
+
+const TasksList = ({ tasks, getTasksList, updateTask, deleteTask, createTask }) => {
+  useEffect(() => {
+    getTasksList();
+  }, []);
+
+  return (
+    <main className="todo-list">
+      <CreateTaskInput onCreate={createTask} />
+      <ul className="list">
+        {tasks.map(task => (
+          <Task
+            key={task.id}
+            {...task}
+            handleTaskStatusChange={updateTask}
+            handleTaskDelete={deleteTask}
+          />
+        ))}
+      </ul>
+    </main>
+  );
+};
+
+TasksList.propTypes = {
+  getTasksList: PropTypes.func.isRequired,
+  updateTask: PropTypes.func.isRequired,
+  deleteTask: PropTypes.func.isRequired,
+  createTask: PropTypes.func.isRequired,
+};
+
+const mapState = state => {
+  return {
+    tasks: sortedTasksSelector(state),
+  };
+};
+
+const mapDispatch = {
+  getTasksList: tasksActions.getTasksList,
+  updateTask: tasksActions.updateTask,
+  deleteTask: tasksActions.deleteTask,
+  createTask: tasksActions.createTask,
+};
+
+export default connect(mapState, mapDispatch)(TasksList);
+
+/**
 import React from 'react';
 import Task from './Task.jsx';
 import CreateTaskInput from './CreateTaskInput';
-import { createTask, fetchTasksList, updateTask, deleteTask } from '../../tasksGateway';
+import { createTask, fetchTasksList, updateTask, deleteTask } from '../tasksGateway';
+import {connect} from "react-redux";
+import * as tasksAction from "../tasks.actions";
+*/
 
-class TasksList extends React.Component {
+/**class TasksList extends React.Component {
   state = {
     tasks: [],
   };
-  //показать задачи, когда компонента отрисовалась - запрос за всеми тасками
+  //показываем задачи, когда компонента отрисовалась - запрос за всеми тасками
   componentDidMount() {
     this.fetchTasks();
   }
 
-  //0* ======ф-я делает запрос на сервер и потом эти задачи устанавливает в state
+  //0* ========== ф-я делает запрос на сервер и потом эти задачи устанавливает в state
   fetchTasks = () => {
     fetchTasksList().then(tasksList => {
       this.setState({ tasks: tasksList });
@@ -47,53 +103,25 @@ class TasksList extends React.Component {
 
   render() {
     const sortedList = this.state.tasks //сортировка массива
-      .slice()
-      .sort((a, b) => a.done - b.done);
+        .slice()
+        .sort((a, b) => a.done - b.done);
 
     return (
-      <div className="todo-list">
-        <CreateTaskInput onCreate={this.onMyCreate} />
-        <ul className="list">
-          {sortedList.map(elem => (
-            <Task
-              onDelete={this.handleTaskDelete}
-              onChange={this.handleTaskStatusChange}
-              key={elem.id}
-              {...elem}
-            />
-          ))}
-        </ul>
-      </div>
+        <div className="todo-list">
+          <CreateTaskInput onCreate={this.onMyCreate} />
+          <ul className="list">
+            {sortedList.map(elem => (
+                <Task
+                    onDelete={this.handleTaskDelete}
+                    onChange={this.handleTaskStatusChange}
+                    key={elem.id}
+                    {...elem} //!*
+                />
+            ))}
+          </ul>
+        </div>
     );
   }
 }
 
-export default TasksList;
-
-//3* ======================handleTaskDelete
-//1. filter tasks и оставить все, кроме удаляемого
-//2. обновить состояние
-// const updatedTasks = this.state.tasks.filter(elem => elem.id !== id);
-// this.setState({ tasks: updatedTasks });
-
-//1* =========================onCreate
-//1. Создать задачу(обьект)
-//2. запостить задачу на сервер
-//3. извлечь (fetch) лист с сервера
-// const { tasks } = this.state;
-
-//2*  ====================== handleTaskStatusChange - обновление
-//1. найти задачу в состоянии по id
-//2. создать updated task (update: создам тот же обьект с и переключить value в done)
-//3. обновить задачу на сервере  (PUT)
-//4. извлечь (fetch) обновленный список задач (POST)
-
-//==========================data===========================
-//       { text: 'Buy milk', done: false, id: 1 },
-//       { text: 'Pick up Tom from airport', done: false, id: 2 },
-//       { text: 'Visit party', done: false, id: 3 },
-//       { text: 'Visit doctor', done: true, id: 4 },
-//       { text: 'Buy meat', done: true, id: 5 },
-
-// done={elem.done}
-// text={elem.text}
+export default TasksList;*/

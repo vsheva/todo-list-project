@@ -1,4 +1,3 @@
-//const baseUrl = 'https://6272c6bfa6522e24ac3e537b.mockapi.io/v1/users';
 const baseUrl = 'https://62e7897793938a545bd3a4cc.mockapi.io/api/v1/tasks';
 
 //0*
@@ -48,7 +47,3 @@ export const deleteTask = taskId => {
     }
   });
 };
-
-export const fetchTaskList=()=>
-    fetch(baseUrl)
-         .then(response=>response.json());
